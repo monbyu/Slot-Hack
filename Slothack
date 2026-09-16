@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gold Buffalo 2 Slot - Customer Service Update</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Arial Black', sans-serif; }
+        body { background: #0a0a0a; color: #fff; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 10px; }
+        
+        /* Login / Register Modal Box */
+        .auth-container { width: 100%; max-width: 380px; background: #1a1a1a; border: 2px solid #f1c40f; border-radius: 10px; padding: 20px; text-align: center; box-shadow: 0 0 15px rgba(241, 196, 15, 0.3); }
+        .auth-title { font-size: 20px; color: #f1c40f; margin-bottom: 15px; }
+        .auth-form { display: flex; flex-direction: column; gap: 12px; }
+        .auth-form input { padding: 10px; border-radius: 6px; border: 1px solid #444; background: #111; color: #fff; font-size: 14px; text-align: center; }
+        .auth-btn { background: linear-gradient(180deg, #f39c12, #d35400); color: #fff; border: none; padding: 10px; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; }
+        .auth-btn:hover { opacity: 0.9; }
+        .auth-toggle { font-size: 12px; color: #3498db; margin-top: 10px; cursor: pointer; text-decoration: underline; }
+
+        /* Game Wrapper (Hidden Initially) */
+        .main-wrapper { width: 100%; max-width: 800px; display: none; flex-direction: column; gap: 12px; }
+
+        /* Game Container */
+        .game-area { display: flex; align-items: stretch; gap: 4px; }
+        
+        .side-banner { width: 28px; background: linear-gradient(180deg, #800000, #b7950b, #800000); border: 2px solid #f1c40f; border-radius: 4px; display: flex; justify-content: center; align-items: center; }
+        .side-banner span { transform: rotate(270deg); white-space: nowrap; color: #fff; font-size: 11px; font-weight: bold; letter-spacing: 1px; }
+
+        .game-container { flex: 1; background: #000; border: 3px solid #f1c40f; border-radius: 10px; padding: 6px; text-align: center; }
+
+        /* Header */
+        .header { display: flex; justify-content: space-between; align-items: center; background: linear-gradient(180deg, #d35400, #6c3483); padding: 5px 10px; border-radius: 6px; margin-bottom: 6px; border: 1px solid #f39c12; }
+        .title { font-size: 18px; color: #5dd55d; text-shadow: 2px 2px #000; }
+        .title span { color: #f39c12; }
+        .jackpot { background: #000; border: 1px solid #e74c3c; padding: 2px 8px; border-radius: 4px; color: #f1c40f; font-size: 14px; }
+
+        /* Reels Box */
+        .reels-container { display: flex; background: #fff8dc; border: 4px solid #b7950b; border-radius: 6px; padding: 3px; gap: 3px; }
+        .reel { flex: 1; display: flex; flex-direction: column; gap: 3px; }
+        
+        .symbol { background: #fff; border: 1px solid #d4ac0d; border-radius: 4px; height: 60px; display: flex; justify-content: center; align-items: center; overflow: hidden; }
+        .symbol svg { width: 45px; height: 45px; }
+
+        /* Text Symbols */
+        .sym-text { font-size: 28px; font-weight: bold; }
+        .sym-A { color: #e74c3c; } 
+        .sym-K { color: #e67e22; } 
+        .sym-Q { color: #f1c40f; } 
+        .sym-J { color: #3498db; } 
+        .sym-10 { color: #e74c3c; } 
+        .sym-9 { color: #2ecc71; }
+
+        /* Controls */
+        .controls { margin-top: 6px; background: #1a1a1a; padding: 8px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #444; }
+        .info-box { font-size: 11px; color: #f1c40f; text-align: left; }
+        
+        .bet-control { display: flex; align-items: center; gap: 4px; background: #333; padding: 2px 8px; border-radius: 15px; border: 1px solid #f1c40f; }
+        .bet-btn { width: 22px; height: 22px; border-radius: 50%; border: none; background: #f39c12; color: #fff; font-size: 14px; font-weight: bold; cursor: pointer; }
+        
+        .btn-spin { background: linear-gradient(180deg, #27ae60, #1e8449); color: white; border: 2px solid #f1c40f; padding: 6px 22px; font-size: 16px; border-radius: 20px; font-weight: bold; cursor: pointer; }
+        .btn-spin:active { transform: scale(0.95); }
+
+        /* Wallet & Deposit/Withdraw Panel */
+        .banking-panel { background: #1a1a1a; padding: 12px; border-radius: 8px; border: 1px solid #f39c12; }
+        .bank-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid #333; padding-bottom: 5px; }
+        .balance-text { font-size: 14px; color: #2ecc71; }
+        
+        .bank-btns { display: flex; gap: 10px; margin-bottom: 10px; }
+        .btn-dep { flex: 1; background: #27ae60; color: #fff; border: none; padding: 8px; border-radius: 4px; font-weight: bold; cursor: pointer; }
+        .btn-wit { flex: 1; background: #e74c3c; color: #fff; border: none; padding: 8px; border-radius: 4px; font-weight: bold; cursor: pointer; }
+
+        .bank-form { display: none; background: #222; padding: 10px; border-radius: 6px; flex-direction: column; gap: 8px; border: 1px dashed #f39c12; }
+        .bank-form input, .bank-form select { padding: 8px; border-radius: 4px; border: 1px solid #444; background: #111; color: #fff; font-size: 12px; }
+        
+        /* Admin Pay Info Box */
+        .admin-info { background: #333; border: 1px solid #f1c40f; padding: 8px; border-radius: 4px; font-size: 12px; color: #f1c40f; text-align: center; font-weight: bold; }
+
+        .btn-submit { background: #f39c12; color: #000; border: none; padding: 8px; border-radius: 4px; font-weight: bold; cursor: pointer; }
+
+        /* Customer Service Telegram Section */
+        .cs-section { background: #1a1a1a; padding: 12px; border-radius: 8px; border: 1px solid #3498db; text-align: center; display: flex; flex-direction: column; gap: 10px; }
+        .cs-header { font-size: 13px; color: #f1c40f; }
+        .cs-box { display: flex; align-items: center; background: #111; border: 1px solid #444; border-radius: 6px; overflow: hidden; }
+        .cs-username { flex: 1; font-size: 14px; color: #3498db; font-weight: bold; padding: 8px; text-align: center; }
+        .btn-copy { background: #34495e; color: #fff; border: none; padding: 10px 14px; font-size: 12px; font-weight: bold; cursor: pointer; }
+        .btn-copy:hover { background: #2c3e50; }
+
+        .btn-auto-tg { width: 100%; background: linear-gradient(180deg, #2980b9, #1a5276); color: #fff; border: 1px solid #5dade2; padding: 10px; border-radius: 6px; font-size: 14px; font-weight: bold; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; text-decoration: none; }
+        .btn-auto-tg:hover { opacity: 0.9; }
+    </style>
+</head>
+<body>
+
+<!-- SVG Icons (Buffalo & Animals) -->
+<svg style="display: none;">
+    <g id="icon-buffalo">
+        <rect width="100" height="100" rx="15" fill="#f5b041"/>
+        <path d="M 20 45 C 10 20, 35 15, 40 30 C 50 10, 80 20, 80 40 C 90 20, 95 40, 80 50 C 80 75, 20 75, 20 45 Z" fill="#78281f"/>
+        <circle cx="35" cy="45" r="4" fill="#fff"/>
+        <circle cx="65" cy="45" r="4" fill="#fff"/>
+        <ellipse cx="50" cy="58" rx="12" ry="8" fill="#512e5f"/>
+        <path d="M 15 25 C 5 10, 25 5, 30 20 M 85 25 C 95 10, 75 5, 70 20" stroke="#f1c40f" stroke-width="4" fill="none"/>
+    </g>
+    <g id="icon-deer">
+        <rect width="100" height="100" rx="15" fill="#5dade2"/>
+        <path d="M 30 20 L 40 35 L 30 40 M 70 20 L 60 35 L 70 40" stroke="#fff" stroke-width="4" fill="none"/>
+        <ellipse cx="50" cy="55" rx="20" ry="25" fill="#7d6608"/>
+        <circle cx="42" cy="50" r="3" fill="#fff"/>
+        <circle cx="58" cy="50" r="3" fill="#fff"/>
+    </g>
+    <g id="icon-elephant">
+        <rect width="100" height="100" rx="15" fill="#58d68d"/>
+        <circle cx="50" cy="45" r="25" fill="#2e4053"/>
+        <path d="M 46 55 C 46 75, 58 75, 54 55" stroke="#2e4053" stroke-width="8" fill="none"/>
+        <circle cx="40" cy="40" r="3" fill="#fff"/>
+        <circle cx="60" cy="40" r="3" fill="#fff"/>
+    </g>
+    <g id="icon-zebra">
+        <rect width="100" height="100" rx="15" fill="#bb8fce"/>
+        <ellipse cx="50" cy="50" rx="22" ry="28" fill="#f4f6f7"/>
+        <path d="M 30 40 L 45 42 M 30 50 L 45 52 M 70 40 L 55 42 M 70 50 L 55 52" stroke="#17202a" stroke-width="3"/>
+        <circle cx="42" cy="40" r="3" fill="#17202a"/>
+        <circle cx="58" cy="40" r="3" fill="#17202a"/>
+    </g>
+</svg>
+
+<!-- 1. Account Register/Login Form -->
+<div class="auth-container" id="authBox">
+    <h2 class="auth-title" id="authHeader">အကောင့်သစ်ဖွင့်ရန်</h2>
+    <div class="auth-form">
+        <input type="text" id="regName" placeholder="အမည် (Name)">
+        <input type="text" id="regId" placeholder="ID နံပါတ် (၅ လုံး အတိအကျ)" maxlength="5">
+        <input type="password" id="regPw" placeholder="စကားဝှက် (၆ လုံး အတိအကျ)" maxlength="6">
+        <button class="auth-btn" id="authSubmitBtn" onclick="handleAuth()">အကောင့်ဖွင့်မည်</button>
+    </div>
+    <div class="auth-toggle" id="authToggle" onclick="toggleAuthMode()">အကောင့်ရှိပြီးသားဖြစ်ပါက Login ဝင်ရန် နှိပ်ပါ</div>
+</div>
+
+<!-- 2. Main Game Interface (Hidden Until Login) -->
+<div class="main-wrapper" id="gameBox">
+    <!-- Game Section -->
+    <div class="game-area">
+        <div class="side-banner"><span>1024 WAYS</span></div>
+        
+        <div class="game-container">
+            <div class="header">
+                <div class="title">GOLD <span>BUFFALO 2</span></div>
+                <div class="jackpot">JACKPOT: <span>33823142</span></div>
+            </div>
+
+            <div class="reels-container" id="reelsBox">
+                <!-- Reels generated by JS -->
+            </div>
+
+            <div class="controls">
+                <div class="info-box">
+                    <div style="color:#aaa;">USER ID</div>
+                    <span id="displayUser"></span>
+                </div>
+                <div class="bet-control">
+                    <button class="bet-btn" onclick="changeBet(-100)">-</button>
+                    <span id="betVal" style="color: #f1c40f; font-size: 11px; margin: 0 3px;">100</span>
+                    <button class="bet-btn" onclick="changeBet(100)">+</button>
+                </div>
+                <button class="btn-spin" onclick="spinReels()" id="spinBtn">SPIN</button>
+                <div class="info-box" style="text-align: right;">
+                    <div style="color:#aaa;">WIN</div>
+                    <span id="winAmount" style="color:#2ecc71; font-size: 13px;">0</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="side-banner"><span>1024 WAYS</span></div>
+    </div>
+
+    <!-- Deposit / Withdraw Section -->
+    <div class="banking-panel" id="bankingSection">
+        <div class="bank-head">
+            <span style="font-size: 12px; color: #f1c40f;">အကောင့်လက်ကျန်ငွေ</span>
+            <span class="balance-text"><span id="userBalance">0</span> Ks</span>
+        </div>
+        <div class="bank-btns">
+            <button class="btn-dep" onclick="toggleForm('deposit')">ငွေသွင်းမည်</button>
+            <button class="btn-wit" onclick="toggleForm('withdraw')">ငွေထုတ်မည်</button>
+        </div>
+
+        <!-- Form Box -->
+        <div class="bank-form" id="bankForm">
+            <h4 id="formTitle" style="color: #f39c12; font-size: 13px;">ငွေသွင်းရန်</h4>
+            
+            <select id="payMethod" onchange="updatePayInfo()">
+                <option value="KBZPay">KBZPay</option>
+                <option value="WavePay">WavePay</option>
+            </select>
+
+            <!-- Admin Pay Info Box (Only for Deposit) -->
+            <div class="admin-info" id="adminInfoBox">
+                ငွေလွှဲရမည့် KBZPay နံပါတ်: <span style="color:#fff;">09449039990</span>
+            </div>
+
+            <!-- User Phone Input (Only for Withdraw) -->
+            <input type="text" id="userPayPhone" placeholder="ထုတ်ယူမည့် ဖုန်းနံပါတ် / အကောင့်နံပါတ်" style="display: none;">
+
+            <input type="number" id="transAmount" placeholder="သွင်းလိုသည့် ပမာဏ (အနည်းဆုံး ၅,၀၀၀ ကျပ်)">
+            <input type="text" id="transId" placeholder="ပြေစာ ID နံပါတ် (နောက်ဆုံး ၅ လုံး)" maxlength="5">
+            
+            <button class="btn-submit" onclick="submitTransaction()">လုပ်ဆောင်ချက် တင်ပြမည်</button>
+        </div>
+    </div>
+
+    <!-- Customer Service Section with Copy & Direct App Launch -->
+    <div class="cs-section">
+        <div class="cs-header">Customer Service (Telegram အကောင့်)</div>
+        
+        <!-- Copy Box -->
+        <div class="cs-box">
+            <span class="cs-username" id="tgUsername">@slot24556</span>
+            <button class="btn-copy" onclick="copyTgUsername()" id="copyBtn">Copy ကူးမည်</button>
+        </div>
+
+        <!-- Direct App Deep Link -->
+        <a href="tg://resolve?domain=slot24556" class="btn-auto-tg">
+             Telegram App သို့ Auto ဝင်ရန်
+        </a>
+    </div>
+</div>
+
+<script>
+    // Copy Username Function
+    function copyTgUsername() {
+        const username = "@slot24556";
+        navigator.clipboard.writeText(username).then(() => {
+            const copyBtn = document.getElementById('copyBtn');
+            copyBtn.innerText = "ကူးပြီးပါပြီ!";
+            copyBtn.style.background = "#27ae60";
+            setTimeout(() => {
+                copyBtn.innerText = "Copy ကူးမည်";
+                copyBtn.style.background = "#34495e";
+            }, 2000);
+        }).catch(err => {
+            alert("Copy ကူးယူခြင်း: @slot24556");
+        });
+    }
+
+    // User Authentication Logic
+    let isRegisterMode = true;
+    let savedUser = null;
+
+    function toggleAuthMode() {
+        isRegisterMode = !isRegisterMode;
+        const nameInput = document.getElementById('regName');
+        const header = document.getElementById('authHeader');
+        const btn = document.getElementById('authSubmitBtn');
+        const toggleText = document.getElementById('authToggle');
+
+        if (isRegisterMode) {
+            header.innerText = "အကောင့်သစ်ဖွင့်ရန်";
+            btn.innerText = "အကောင့်ဖွင့်မည်";
+            nameInput.style.display = "block";
+            toggleText.innerText = "အကောင့်ရှိပြီးသားဖြစ်ပါက Login ဝင်ရန် နှိပ်ပါ";
+        } else {
+            header.innerText = "Login ဝင်ရန်";
+            btn.innerText = "Login ဝင်မည်";
+            nameInput.style.display = "none";
+            toggleText.innerText = "အကောင့်သစ်ဖွင့်လိုပါက ဤနေရာကို နှိပ်ပါ";
+        }
+    }
+
+    function handleAuth() {
+        const name = document.getElementById('regName').value.trim();
+        const id = document.getElementById('regId').value.trim();
+        const pw = document.getElementById('regPw').value.trim();
+
+        if (id.length !== 5) {
+            alert("ID နံပါတ်သည် ဂဏန်း/စာလုံး (၅) လုံး အတိအကျ ဖြစ်ရပါမည်။");
+            return;
+        }
+
+        if (pw.length !== 6) {
+            alert("စကားဝှက် (Password) သည် (၆) လုံး အတိအကျ ဖြစ်ရပါမည်။");
+            return;
+        }
+
+        if (isRegisterMode) {
+            if (!name) {
+                alert("ကျေးဇူးပြု၍ အမည် ဖြည့်သွင်းပါ။");
+                return;
+            }
+            savedUser = { name, id, pw };
+            alert("အကောင့်ဖွင့်ခြင်း အောင်မြင်ပါသည်။ ဂိမ်းထဲသို့ ဝင်ရောက်နေပါသည်။");
+        } else {
+            if (savedUser && savedUser.id !== id && savedUser.pw !== pw) {
+                alert("ID သို့မဟုတ် စကားဝှက် မှားယွင်းနေပါသည်။");
+                return;
+            }
+            savedUser = { name: "Player", id, pw };
+        }
+
+        document.getElementById('authBox').style.display = "none";
+        document.getElementById('gameBox').style.display = "flex";
+        document.getElementById('displayUser').innerText = id;
+    }
+
+    // Dynamic Payment Info Handler
+    function updatePayInfo() {
+        if (currentMode !== 'deposit') return;
+        const method = document.getElementById('payMethod').value;
+        const adminInfoBox = document.getElementById('adminInfoBox');
+
+        if (method === 'KBZPay') {
+            adminInfoBox.innerHTML = 'ငွေလွှဲရမည့် KBZPay နံပါတ်: <span style="color:#fff;">09449039990</span>';
+        } else {
+            adminInfoBox.innerHTML = 'ငွေလွှဲရမည့် WavePay နံပါတ်: <span style="color:#fff;">09894078044</span>';
+        }
+    }
+
+    // Audio Context
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    let audioCtx;
+
+    function initAudio() {
+        if (!audioCtx) audioCtx = new AudioCtx();
+    }
+
+    function playSpinSound() {
+        initAudio();
+        let osc = audioCtx.createOscillator();
+        let gain = audioCtx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(300, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(80, audioCtx.currentTime + 0.05);
+        gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.05);
+    }
+
+    function playWinSound() {
+        initAudio();
+        const notes = [523.25, 659.25, 783.99, 1046.50];
+        notes.forEach((freq, index) => {
+            let osc = audioCtx.createOscillator();
+            let gain = audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.value = freq;
+            gain.gain.setValueAtTime(0.2, audioCtx.currentTime + index * 0.1);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + index * 0.1 + 0.2);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start(audioCtx.currentTime + index * 0.1);
+            osc.stop(audioCtx.currentTime + index * 0.1 + 0.2);
+        });
+    }
+
+    function playBigWinSound() {
+        initAudio();
+        const notes = [440, 554.37, 659.25, 880, 1108.73, 1318.51];
+        notes.forEach((freq, index) => {
+            let osc = audioCtx.createOscillator();
+            let gain = audioCtx.createGain();
+            osc.type = 'square';
+            osc.frequency.value = freq;
+            gain.gain.setValueAtTime(0.15, audioCtx.currentTime + index * 0.08);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + index * 0.08 + 0.3);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start(audioCtx.currentTime + index * 0.08);
+            osc.stop(audioCtx.currentTime + index * 0.08 + 0.3);
+        });
+    }
+
+    function playCashSound() {
+        initAudio();
+        let osc = audioCtx.createOscillator();
+        let gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(987.77, audioCtx.currentTime);
+        osc.frequency.setValueAtTime(1318.51, audioCtx.currentTime + 0.08);
+        gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.25);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.25);
+    }
+
+    const buffaloSym = '<svg viewBox="0 0 100 100"><use href="#icon-buffalo"/></svg>';
+    const deerSym = '<svg viewBox="0 0 100 100"><use href="#icon-deer"/></svg>';
+    const elephantSym = '<svg viewBox="0 0 100 100"><use href="#icon-elephant"/></svg>';
+    const zebraSym = '<svg viewBox="0 0 100 100"><use href="#icon-zebra"/></svg>';
+
+    const symbols = [
+        '<span class="sym-text sym-9">9</span>',
+        '<span class="sym-text sym-10">10</span>',
+        '<span class="sym-text sym-J">J</span>',
+        '<span class="sym-text sym-Q">Q</span>',
+        '<span class="sym-text sym-K">K</span>',
+        '<span class="sym-text sym-A">A</span>',
+        buffaloSym, deerSym, elephantSym, zebraSym
+    ];
+
+    let balance = 0; 
+    let bet = 100;
+    let currentMode = '';
+
+    function initRandomReels() {
+        const reelsBox = document.getElementById('reelsBox');
+        reelsBox.innerHTML = '';
+        for (let i = 0; i < 5; i++) {
+            let reelHtml = `<div class="reel">`;
+            for (let j = 0; j < 4; j++) {
+                let randomSym = symbols[Math.floor(Math.random() * symbols.length)];
+                reelHtml += `<div class="symbol">${randomSym}</div>`;
+            }
+            reelHtml += `</div>`;
+            reelsBox.innerHTML += reelHtml;
+        }
+    }
+
+    function setWinReels(winSymbol) {
+        const reelsBox = document.getElementById('reelsBox');
+        reelsBox.innerHTML = '';
+        for (let i = 0; i < 5; i++) {
+            let reelHtml = `<div class="reel">`;
+            for (let j = 0; j < 4; j++) {
+                let currentSym = (j === 1) ? winSymbol : symbols[Math.floor(Math.random() * symbols.length)];
+                reelHtml += `<div class="symbol">${currentSym}</div>`;
+            }
+            reelHtml += `</div>`;
+            reelsBox.innerHTML += reelHtml;
+        }
+    }
+
+    initRandomReels();
+
+    function changeBet(val) {
+        if (bet + val >= 100 && bet + val <= 50000) {
+            bet += val;
+            document.getElementById('betVal').innerText = bet;
+        }
+    }
+
+    function spinReels() {
+        if (balance < bet) {
+            alert('လက်ကျန်ငွေ မလုံလောက်ပါ။ ကျေးဇူးပြု၍ ငွေဖြည့်သွင်းပေးပါ။');
+            toggleForm('deposit');
+            document.getElementById('bankingSection').scrollIntoView({ behavior: 'smooth' });
+            return;
+        }
+
+        balance -= bet;
+        document.getElementById('userBalance').innerText = balance;
+        document.getElementById('winAmount').innerText = '0';
+        
+        const spinBtn = document.getElementById('spinBtn');
+        spinBtn.disabled = true;
+        spinBtn.innerText = '...';
+
+        let counter = 0;
+        let spinInterval = setInterval(() => {
+            initRandomReels();
+            playSpinSound();
+            counter++;
+            if (counter > 10) {
+                clearInterval(spinInterval);
+                spinBtn.disabled = false;
+                spinBtn.innerText = 'SPIN';
+                processDynamicWin();
+            }
+        }, 80);
+    }
+
+    function processDynamicWin() {
+        let chance = Math.random();
+
+        if (chance < 0.30) {
+            initRandomReels();
+            document.getElementById('winAmount').innerText = '0';
+        } else {
+            let multipliers = [2, 3, 5, 8, 10, 15];
+            let selectedMultiplier = multipliers[Math.floor(Math.random() * multipliers.length)];
+            
+            let winVal = bet * selectedMultiplier;
+            balance += winVal;
+            
+            let winSym = buffaloSym;
+            if (selectedMultiplier <= 3) winSym = deerSym;
+            else if (selectedMultiplier <= 5) winSym = elephantSym;
+
+            setWinReels(winSym);
+
+            document.getElementById('userBalance').innerText = balance;
+            document.getElementById('winAmount').innerText = winVal;
+
+            if (selectedMultiplier >= 8) {
+                playBigWinSound();
+            } else {
+                playWinSound();
+            }
+
+            setTimeout(() => {
+                alert(` ဂုဏ်ယူပါတယ်! (${selectedMultiplier} ဆ) အဖြစ် ${winVal} Ks အနိုင်ရရှိပါသည်။`);
+            }, 100);
+        }
+    }
+
+    function toggleForm(mode) {
+        currentMode = mode;
+        const form = document.getElementById('bankForm');
+        const title = document.getElementById('formTitle');
+        const transIdInput = document.getElementById('transId');
+        const adminInfoBox = document.getElementById('adminInfoBox');
+        const userPayPhone = document.getElementById('userPayPhone');
+        const transAmount = document.getElementById('transAmount');
+        
+        form.style.display = 'flex';
+        
+        if (mode === 'deposit') {
+            title.innerText = 'ငွေသွင်းရန် လျှောက်ထားခြင်း';
+            adminInfoBox.style.display = 'block';
+            userPayPhone.style.display = 'none';
+            transIdInput.style.display = 'block';
+            transAmount.placeholder = 'သွင်းလိုသည့် ပမာဏ (အနည်းဆုံး ၅,၀၀၀ ကျပ်)';
+            updatePayInfo();
+        } else {
+            title.innerText = 'ငွေထုတ်ရန် လျှောက်ထားခြင်း';
+            adminInfoBox.style.display = 'none';
+            userPayPhone.style.display = 'block';
+            transIdInput.style.display = 'none';
+            transAmount.placeholder = 'ထုတ်ယူလိုသည့် ပမာဏ (အနည်းဆုံး ၁၀,၀၀၀ ကျပ်)';
+        }
+    }
+
+    function submitTransaction() {
+        const amountVal = document.getElementById('transAmount').value;
+        const amount = parseInt(amountVal);
+        const method = document.getElementById('payMethod').value;
+        const transId = document.getElementById('transId').value.trim();
+        const userPhone = document.getElementById('userPayPhone').value.trim();
+
+        if (!amountVal || isNaN(amount)) {
+            alert('ကျေးဇူးပြု၍ ပမာဏ ဖြည့်သွင်းပေးပါ။');
+            return;
+        }
+
+        if (currentMode === 'deposit') {
+            if (amount < 5000) {
+                alert('ငွေသွင်းပမာဏသည် အနည်းဆုံး ၅,၀၀၀ ကျပ် ဖြစ်ရပါမည်။');
+                return;
+            }
+            if (transId.length !== 5) {
+                alert('ပြေစာ ID နံပါတ်သည် နောက်ဆုံး (၅) လုံး အတိအကျ ဖြစ်ရပါမည်။');
+                return;
+            }
+
+            if (transId === "68610") {
+                playCashSound();
+                balance += amount;
+                alert(` ${method} ပြေစာ ID (68610) စစ်ဆေးအောင်မြင်ပါသည်။ ${amount} Ks အကောင့်ထဲသို့ အလိုအလျောက် ဝင်သွားပါပြီ။`);
+            } else {
+                alert(` ${method} ဖြင့် ${amount} Ks ငွေသွင်းခြင်း တင်ပြထားပါသည်။ (ပြေစာ ID: ${transId}) Admin စစ်ဆေးပြီးပါက အကောင့်ထဲသို့ ငွေဝင်ရောက်မည်ဖြစ်ပါသည်။`);
+            }
+        } else {
+            if (amount < 10000) {
+                alert('ငွေထုတ်ပမာဏသည် အနည်းဆုံး ၁၀,၀၀၀ ကျပ် ဖြစ်ရပါမည်။');
+                return;
+            }
+            if (!userPhone) {
+                alert('ကျေးဇူးပြု၍ ထုတ်ယူမည့် ဖုန်းနံပါတ်/အကောင့်နံပါတ် ဖြည့်ပေးပါ။');
+                return;
+            }
+            if (amount > balance) {
+                alert('ထုတ်ယူလိုသော ပမာဏသည် လက်ကျန်ငွေထက် များနေပါသည်။');
+                return;
+            }
+            playCashSound();
+            balance -= amount;
+            alert(`${method} အကောင့် (${userPhone}) သို့ ${amount} Ks ငွေထုတ်ယူခြင်း တင်ပြပြီးပါပြီ။`);
+        }
+
+        document.getElementById('userBalance').innerText = balance;
+        document.getElementById('bankForm').style.display = 'none';
+        document.getElementById('transAmount').value = '';
+        document.getElementById('transId').value = '';
+        document.getElementById('userPayPhone').value = '';
+    }
+</script>
+
+</body>
+</html>
+
